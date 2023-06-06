@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Boost;
 use App\Models\Reward;
 use App\Models\RewardBenefit;
-use App\Models\User;
 
 class ClaimUserRewardController extends Controller
 {
@@ -53,7 +52,7 @@ class ClaimUserRewardController extends Controller
                     'description' => 'Daily reward coins awarded',
                     'value' => $rewardEachDay->reward_count,
                 ]);
-            }
+            } 
         }
         $reward = Reward::where('name','daily_rewards')->first();
 

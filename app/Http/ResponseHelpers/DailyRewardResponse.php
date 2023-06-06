@@ -2,6 +2,11 @@
 
 namespace App\Http\ResponseHelpers;
 
+use App\Models\RewardBenefit;
+use App\Models\User;
+use App\Models\UserReward;
+use Carbon\Carbon;
+
 class DailyRewardResponse
 {
     public function transform($reward)
@@ -12,6 +17,33 @@ class DailyRewardResponse
             'icon' => $reward->icon,
             'day' => $reward->reward_benefit_id,
             'name' => $reward->reward_name,
+            'can_claim' => $this->canClaim($reward),
+            'is_claimed' => $this->isClaimed($reward)
         ];
+    }
+
+    private function canClaim($reward)
+    {
+        $users = User::all();
+        foreach ($users as $user) {
+            $userRewardRecordCount = $user->rewards()->count();
+            $userRecord = UserReward::where('user_id', $user->id)->where('reward_count', 1)->where('reward_milestone', $reward->reward_benefit_id)->first();
+            if ($reward->reward_benefit_id == $userRewardRecordCount && !$userRecord) {
+                return true;
+            } else{
+                return false;
+            }
+        }
+    }
+ 
+    private function isClaimed($reward)
+    {
+        $users = User::all();
+        foreach ($users as $user) {
+            $userRecords = UserReward::where('user_id', $user->id)->where('reward_count', 1)->where('reward_milestone', $reward->reward_benefit_id)->get();
+            foreach($userRecords as $userRecord){
+                return $userRecord->reward_milestone == $reward->reward_benefit_id;
+            }
+        }
     }
 }
