@@ -475,4 +475,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(DailyObjective::class, 'user_daily_objectives')->withPivot('count', 'is_achieved');
     }
+
+    public function userLevel()
+    {
+        return $this->hasMany(UserLevel::class);
+    }
 }

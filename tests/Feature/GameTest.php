@@ -511,21 +511,12 @@ class GameTest extends TestCase
 
     public function test_that_a_user_has_levels()
     {   
-        GameSession::where('user_id', '!=', $this->user->id)->update(['user_id' => $this->user->id, 'state' => 'ONGOING']);
-        $game = $this->user->gameSessions()->first();
-       
-        $this->post(self::END_EXHIBITION_GAME_URL, [
-            "token" => $game->session_token,
-            "chosenOptions" => [],
-            "consumedBoosts" => []
-        ]);
-        $game->refresh();
+        $response = $this->get(self::COMMON_DATA_URL);
         
-        $this->assertDatabaseHas('game_sessions', [
+        $this->assertDatabaseHas('user_levels', [
             'user_id' => $this->user->id,
             'user_level' => 1
         ]);
     }
-
 
 }
