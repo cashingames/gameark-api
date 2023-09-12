@@ -1,30 +1,28 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Http\ResponseHelpers\GameSessionResponse;
+
+use App\Enums\AchievementType;
+use App\Events\AchievementBadgeEvent;
 use App\Http\ResponseHelpers\CommonDataResponse;
-use App\Models\GameMode;
+use App\Http\ResponseHelpers\GameSessionResponse;
 use App\Models\Boost;
-use App\Models\Plan;
 use App\Models\Category;
-use App\Models\GameType;
-use App\Models\UserBoost;
+use App\Models\GameMode;
 use App\Models\GameSessionQuestion;
+use App\Models\GameType;
+use App\Models\Plan;
 use App\Models\Question;
+use App\Models\UserBoost;
+use App\Models\UserLevel;
+use App\Services\PlayGame\ReferralService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use App\Services\PlayGame\ReferralService;
 use Illuminate\Support\Facades\Event;
-use App\Events\AchievementBadgeEvent;
-use App\Enums\AchievementType;
-use App\Models\GameSession;
-use App\Models\UserCategory;
+use Illuminate\Support\Facades\Log;
 use stdClass;
-
-use function PHPUnit\Framework\isNull;
 
 class GameController extends BaseController
 {
@@ -34,12 +32,12 @@ class GameController extends BaseController
 
         $result->plans = Cache::rememberForever(
             'plans',
-            fn () => Plan::where('is_free', false)->orderBy('price', 'ASC')->get()
+            fn() => Plan::where('is_free', false)->orderBy('price', 'ASC')->get()
         );
 
         $result->gameModes = Cache::rememberForever(
             'gameModes',
-            fn () =>
+            fn() =>
             GameMode::select(
                 'id',
                 'name',
@@ -51,9 +49,9 @@ class GameController extends BaseController
                 ->get()
         );
 
-        $gameTypes = Cache::rememberForever('gameTypes', fn () => GameType::has('questions')->inRandomOrder()->get());
+        $gameTypes = Cache::rememberForever('gameTypes', fn() => GameType::has('questions')->inRandomOrder()->get());
 
-        $categories = Cache::rememberForever('categories', fn () => Category::all());
+        $categories = Cache::rememberForever('categories', fn() => Category::all());
         // $categories = $this->showCategories();
         $gameInfo = DB::select("
         SELECT gt.name game_type_name, gt.id game_type_id, c.category_id category_id,
@@ -83,15 +81,13 @@ class GameController extends BaseController
             $toReturnCategories = [];
             foreach ($_categories as $category) {
 
-
-
                 $uSubs = $gameInfo->where('game_type_id', $type->id)->where('category_id', $category->id)->unique('subcategory_id');
                 $_subcategories = $categories->filter(function ($x) use ($uSubs) {
                     return $uSubs->firstWhere('subcategory_id', $x->id) !== null;
                 });
 
                 $toReturnSubcategories = [];
-                
+
                 foreach ($_subcategories as $subcategory) {
                     $s = new stdClass;
                     $s->id = $subcategory->id;
@@ -123,16 +119,19 @@ class GameController extends BaseController
 
             $toReturnTypes[] = $_type;
         }
-      
+        $userLevel = null;
         $result->gameTypes = $toReturnTypes;
         $result->boosts = Boost::whereNull('deleted_at')
             ->where('name', '!=', 'Bomb')
             ->get();
-        $latestGameSession = GameSession::where('user_id', $this->user->id)->latest()->first();
+        $latestGameSession = UserLevel::where('user_id', $this->user->id)->latest()->first();
         if ($latestGameSession) {
             $userLevel = $latestGameSession->user_level;
         } else {
-            $userLevel = 1;
+            UserLevel::create([
+                'user_id' => $this->user->id,
+                'user_level' => 1,
+            ]);
         }
         $result->userLevel = $userLevel;
         $result->minVersionCode = config('trivia.min_version_code_gameark');
@@ -215,17 +214,18 @@ class GameController extends BaseController
 
         $game->wrong_count = $wrongs;
         $game->correct_count = $points;
-        $userLevel = null;
+        $userLevel = UserLevel::where('user_id', $this->user->id)->latest()->first();
 
-        if($game->correct_count >= 5){
-            $userLevel = $game->user_level + 1;
+        if ($game->correct_count >= 5) {
+            if ($userLevel) {
+                $userLevel->user_level += 1; // Increment user_level by 1
+                $userLevel->save(); // Save the updated user_level back to the database
+            }
         }
-        $game->user_level = $userLevel;
-       
         $game = $this->processUserCoin($game);
         $game->points_gained = $points;
         $game->total_count = $points + $wrongs;
-       
+
         $game->save();
         if ($points > 0) {
             $this->creditPoints($this->user->id, $game->points_gained, "Points gained from game played");
@@ -237,22 +237,20 @@ class GameController extends BaseController
 
                 $userBoost->update([
                     'used_count' => $userBoost->used_count + 1,
-                    'boost_count' => $userBoost->boost_count - 1
+                    'boost_count' => $userBoost->boost_count - 1,
                 ]);
 
                 DB::table('exhibition_boosts')->insert([
                     'game_session_id' => $game->id,
                     'boost_id' => $row['boost']['id'],
                     'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now()
+                    'updated_at' => Carbon::now(),
                 ]);
             }
         });
 
         // call for referral logic
         $referralService->gift();
-
-
 
         // call the event listener
         Event::dispatch(new AchievementBadgeEvent($request, AchievementType::GAME_PLAYED, $game));
@@ -266,12 +264,12 @@ class GameController extends BaseController
         $userScore = $game->correct_count;
 
         if ($userScore == config('trivia.coin_reward.user_scores.perfect_score')) {
-            $coinsEarned =  config('trivia.coin_reward.coins_earned.perfect_coin');
+            $coinsEarned = config('trivia.coin_reward.coins_earned.perfect_coin');
         } else if ($userScore >= config('trivia.coin_reward.user_scores.high_score') && $userScore < config('trivia.coin_reward.user_scores.perfect_score')) {
             $coinsEarned = config('trivia.coin_reward.coins_earned.high_coin');
         } else if ($userScore >= config('trivia.coin_reward.user_scores.medium_score') && $userScore < config('trivia.coin_reward.user_scores.high_score')) {
             $coinsEarned = config('trivia.coin_reward.coins_earned.medium_coin');
-        } else if ($userScore >=  config('trivia.coin_reward.user_scores.low_score') && $userScore < config('trivia.coin_reward.user_scores.medium_score')) {
+        } else if ($userScore >= config('trivia.coin_reward.user_scores.low_score') && $userScore < config('trivia.coin_reward.user_scores.medium_score')) {
             $coinsEarned = config('trivia.coin_reward.coins_earned.low_coin');
         } else {
             $coinsEarned = 0;
@@ -286,7 +284,7 @@ class GameController extends BaseController
             'user_id' => $this->user->id,
             'transaction_type' => 'CREDIT',
             'description' => 'Game coins awarded',
-            'value' => $coinsEarned
+            'value' => $coinsEarned,
         ]);
         return $game;
     }

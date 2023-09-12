@@ -28,8 +28,10 @@ use App\Http\Controllers\MissUserRewardController;
 use App\Http\Controllers\PlayGame\StartSinglePlayerGameController;
 use App\Http\Controllers\GetGameController;
 use App\Http\Controllers\GetUserCategoriesController;
+use App\Http\Controllers\GetUserLevelController;
 use App\Http\Controllers\RemoveUserCategoryController;
 use App\Http\Controllers\UpdateGuestPlayerProfileController;
+use App\Http\Controllers\UserLevelController;
 
 Route::post('auth/register', [RegisterController::class, 'register']);
 Route::post('auth/login', [LoginController::class, 'login']);
@@ -79,6 +81,7 @@ Route::middleware(['auth:api'])->prefix('v3')->group(
         Route::post('levels-reward/claim', ClaimHallmarkLevelRewardsController::class);
         Route::get('trivia-quest/daily-objectives', GetDailyObjectiveController::class);
         Route::get('trivia-quest/user-categories', GetUserCategoriesController::class);
+        Route::get('trivia-quest/level', GetUserLevelController::class);
     }
 );
 
