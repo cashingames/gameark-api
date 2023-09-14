@@ -36,6 +36,10 @@ class DailyRewardService
             $userLastRewardClaimDate = Carbon::parse($userLastRecord->reward_date);
             $currentDate = Carbon::now();
 
+            if($userLastRecord->reward_milestone == 7){
+                return $this->returnRewardPayload([], false);
+            }
+
             if ($userLastRewardClaimDate->isSameDay($currentDate)) {
 
                 return $this->returnRewardPayload([], false);

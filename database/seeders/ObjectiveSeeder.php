@@ -32,7 +32,7 @@ class ObjectiveSeeder extends Seeder
                 'name' => 'Coins Earned',
                 'reward' => 30,
                 'milestone_count' => 20,
-                'icon' => 'icons/skip_icon.png',
+                'icon' => 'icons/coin_icon.png',
                 'description' => 'Earn 20 coins in a game'
             ]
         );
@@ -56,7 +56,7 @@ class ObjectiveSeeder extends Seeder
                 'name' => 'Referral',
                 'reward' => 30,
                 'milestone_count' => 1,
-                'icon' => 'icons/skip_icon.png',
+                'icon' => 'icons/share_icon.png',
                 'description' => 'Invite a friend to play Trivia Quest'
             ]
         );
@@ -68,7 +68,7 @@ class ObjectiveSeeder extends Seeder
                 'name' => 'Game Scores',
                 'reward' => 30,
                 'milestone_count' => 5,
-                'icon' => 'icons/skip_icon.png',
+                'icon' => 'icons/science.png',
                 'description' => 'Score at least 5 points in a game.'
             ]
         );
@@ -93,7 +93,7 @@ class ObjectiveSeeder extends Seeder
                 'name' => 'Game Scores',
                 'reward' => 30,
                 'milestone_count' => 10,
-                'icon' => 'icons/skip_icon.png',
+                'icon' => 'icons/science.png',
                 'description' => 'Get a perfect score'
             ]
         );
@@ -117,7 +117,7 @@ class ObjectiveSeeder extends Seeder
                 'name' => 'Coins Earned',
                 'reward' => 30,
                 'milestone_count' => 50,
-                'icon' => 'icons/skip_icon.png',
+                'icon' => 'icons/coin_icon.png',
                 'description' => 'Earn 50 coins'
             ]
         );
@@ -141,7 +141,7 @@ class ObjectiveSeeder extends Seeder
                 'name' => 'Game Scores',
                 'reward' => 30,
                 'milestone_count' => 8,
-                'icon' => 'icons/skip_icon.png',
+                'icon' => 'icons/science.png',
                 'description' => 'Score at least 8 points in a game.'
             ]
         );
@@ -153,7 +153,7 @@ class ObjectiveSeeder extends Seeder
                 'name' => 'Boost Usage',
                 'reward' => 30,
                 'milestone_count' => 7,
-                'icon' => 'icons/skip_icon.png',
+                'icon' => 'icons/bomb_icon.png',
                 'description' => 'Use 7 boosts in a day.'
             ]
         );
