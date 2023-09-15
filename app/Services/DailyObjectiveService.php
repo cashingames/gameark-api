@@ -137,7 +137,7 @@ class DailyObjectiveService
 
     private function checkCoinEarned($milestone_count, $dailyObjective)
     {
-        $userGameSessionsCoinEarned = GameSession::where('user_id', auth()->user()->id)->whereDate('created_at', now()->startOfDay())->where('state', 'COMPLETED')->where('coin_earned', '>=', $milestone_count)->first();
+        $userGameSessionsCoinEarned = GameSession::where('user_id', auth()->user()->id)->whereDate('created_at', now()->startOfDay())->where('state', 'COMPLETED')->where('coins_earned', '>=', $milestone_count)->first();
 
         if (!is_null($userGameSessionsCoinEarned)) {
             $this->completeDailyObjective($dailyObjective);
