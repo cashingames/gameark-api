@@ -70,7 +70,7 @@ class DailyObjectiveService
         $data = $this->todayDailyObjective();
         return response()->json([
             "shouldShowDailyObjective" => $shouldShowDailyObjective,
-            'daily objectives' => $data
+            'dailyObjectives' => $data
         ], 200);
     }
 
