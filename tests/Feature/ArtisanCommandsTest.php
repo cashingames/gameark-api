@@ -87,4 +87,10 @@ class ArtisanCommandsTest extends TestCase
         ]);
     }
 
+    public function test_update_daily_objectives_table_command()
+    {
+        $this->artisan('app:up-date-daily-objective')->assertExitCode(0);
+    }
+
+
 }
