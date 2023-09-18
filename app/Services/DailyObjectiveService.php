@@ -121,10 +121,14 @@ class DailyObjectiveService
 
     private function checkBoostUsage($objective, $dailyObjective)
     {
-        $userBoostUsageForToday = UserBoost::whereDate('created_at', '>=', now()->startOfDay())->where('user_id', auth()->user()->id)->count();
-        if ($userBoostUsageForToday >= $objective->milestone_count) {
-            $this->completeDailyObjective($dailyObjective);
-        }
+        $userBoostUsageForToday = DB::table('exhibition_boosts')
+        ->whereDate('created_at', '>=', now()->startOfDay())
+        ->where('user_id', auth()->user()->id)
+        ->count();
+    if ($userBoostUsageForToday >= $objective->milestone_count) {
+        $this->completeDailyObjective($dailyObjective);
+    }
+    
     }
 
     private function checkReferralObjective($dailyObjective)

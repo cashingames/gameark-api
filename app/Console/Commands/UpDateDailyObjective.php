@@ -39,7 +39,7 @@ class UpDateDailyObjective extends Command
         // Select random objectives excluding those from the previous day
         $objectives = Objective::whereNotIn('id', $previousSelections)
             ->inRandomOrder()
-            ->take(2)
+            ->take(1)
             ->get();
 
             UserDailyObjective::whereDate('created_at', '<', now()->startOfDay())->delete();

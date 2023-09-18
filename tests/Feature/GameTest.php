@@ -201,6 +201,7 @@ class GameTest extends TestCase
         $this->assertDatabaseHas('exhibition_boosts', [
             'boost_id' => Boost::where('id', $userBoost[0]->id)->first()->id,
             'game_session_id' => $game->id,
+            'user_id' => $this->user->id
         ]);
 
     }
