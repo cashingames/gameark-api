@@ -241,6 +241,7 @@ class GameController extends BaseController
                 ]);
 
                 DB::table('exhibition_boosts')->insert([
+                    'user_id' => $this->user->id,
                     'game_session_id' => $game->id,
                     'boost_id' => $row['boost']['id'],
                     'created_at' => Carbon::now(),
