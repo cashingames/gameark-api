@@ -214,14 +214,16 @@ class GameController extends BaseController
 
         $game->wrong_count = $wrongs;
         $game->correct_count = $points;
-        $userLevel = UserLevel::where('user_id', $this->user->id)->latest()->first();
-
-        if ($game->correct_count >= 5) {
+        DB::transaction(function () use($game) {
+            $userLevel = UserLevel::where('user_id', $this->user->id)->latest()->first();
+        
             if ($userLevel) {
-                $userLevel->user_level += 1; // Increment user_level by 1
-                $userLevel->save(); // Save the updated user_level back to the database
+                if ($game->correct_count >= 5) {
+                    $userLevel->user_level += 1;
+                    $userLevel->save();
+                }
             }
-        }
+        });
         $game = $this->processUserCoin($game);
         $game->points_gained = $points;
         $game->total_count = $points + $wrongs;
