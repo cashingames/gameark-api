@@ -16,7 +16,7 @@ class GameSeeder extends Seeder
         DB::table('games')->insert(
             [
                 'id' => 1,
-                'name' => 'Trivia Hub',
+                'name' => 'Trivia Hunt',
                 'background_image' => 'games/trivia_hub_bg.png',
                 'icon' => 'games/trivia_hub_icon.png',
                 'is_enabled' => true
