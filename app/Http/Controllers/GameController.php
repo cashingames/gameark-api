@@ -219,7 +219,7 @@ class GameController extends BaseController
         
             if ($userLevel) {
                 if ($game->correct_count >= 5) {
-                    $userLevel->user_level += 1;
+                    $userLevel->user_level = $userLevel->user_level + 1;
                     $userLevel->save();
                 }
             }
