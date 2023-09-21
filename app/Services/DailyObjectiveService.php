@@ -47,7 +47,7 @@ class DailyObjectiveService
         }
         //if userDailyobj for today is achieved
         $dailyObjectivesAchieved = $this->getUserDailyObjectives($user)->where('is_achieved', 1)->count();
-        if($dailyObjectivesAchieved >= 2){
+        if($dailyObjectivesAchieved >= 1){
             $this->awardCoins($user, $objectiveReward);
             return $this->showTodayObjectives(false);
         }
