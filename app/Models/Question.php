@@ -28,7 +28,7 @@ class Question extends Model
         'updated_at'
     ];
 
-    protected $fillable = ['created_by', 'is_published'];
+    protected $fillable = ['created_by', 'is_published', 'trivia_type'];
     //
     /**
      * The "booted" method of the model.

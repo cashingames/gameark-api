@@ -21,6 +21,7 @@ use App\Http\Controllers\RegisterPushDeviceTokenController;
 use App\Http\Controllers\Auth\AuthenticateVerifiedUserController;
 use App\Http\Controllers\ClaimHallmarkLevelRewardsController;
 use App\Http\Controllers\ClaimUserRewardController;
+use App\Http\Controllers\EndHyperRushGameController;
 use App\Http\Controllers\FeatureFlagController;
 use App\Http\Controllers\GetBubbleBlitzGameModesController;
 use App\Http\Controllers\GetDailyObjectiveController;
@@ -30,6 +31,7 @@ use App\Http\Controllers\GetGameController;
 use App\Http\Controllers\GetUserCategoriesController;
 use App\Http\Controllers\GetUserLevelController;
 use App\Http\Controllers\RemoveUserCategoryController;
+use App\Http\Controllers\StartHyperRushGameController;
 use App\Http\Controllers\UpdateGuestPlayerProfileController;
 use App\Http\Controllers\UserLevelController;
 
@@ -82,6 +84,8 @@ Route::middleware(['auth:api'])->prefix('v3')->group(
         Route::get('trivia-quest/daily-objectives', GetDailyObjectiveController::class);
         Route::get('trivia-quest/user-categories', GetUserCategoriesController::class);
         Route::get('trivia-quest/level', GetUserLevelController::class);
+        Route::post('hyper-rush', StartHyperRushGameController::class);
+        Route::post('game/end/hyper-rush', EndHyperRushGameController::class);
     }
 );
 
