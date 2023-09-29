@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('session_token');
-            $table->integer('correct_count')->default(0);
-            $table->integer('wrong_count')->default(0);
-            $table->integer('total_count')->default(0);
-            $table->integer('high_score')->default(0);
+            $table->integer('correct_count')->default(0)->nullable();
+            $table->integer('wrong_count')->default(0)->nullable();
+            $table->integer('total_count')->default(0)->nullable();
+            $table->integer('high_score')->default(0)->nullable();
             $table->timestamp('start_time');
             $table->timestamp('end_time');
             $table->string('state');

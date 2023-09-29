@@ -4,16 +4,29 @@ namespace App\Services;
 
 use App\Models\HyperRushGameSession;
 use App\Models\Question;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class HyperRushGameService
 {
+    private QuestionsHardeningServiceInterface $questionsHardeningService;
+    private User $user;
 
-    public function getHyperRushQuestions()
+    public function __construct()
     {
-        $questions = Question::where('trivia_type', 'hyper_rush')->get();
+        $this->questionsHardeningService = new StandardExhibitionQuestionsHardeningService();
+        $this->user = auth()->user();
+    }
+
+    public function getHyperRushQuestions($category) : array
+    {
+        // $questions = Question::where('trivia_type', 'hyper_rush')->get();
+
+        $questions = $this->questionsHardeningService
+        ->determineQuestions($this->user->id, $category, null);
+
 
         if ($questions) {
 
