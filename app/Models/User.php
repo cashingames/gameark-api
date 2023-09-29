@@ -220,6 +220,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(GameSession::class);
     }
 
+    public function hyperRushGameSessions()
+    {
+        return $this->hasMany(HyperRushGameSession::class);
+    }
+
     public function gameSessionQuestions()
     {
         return $this->hasManyThrough(GameSessionQuestion::class, GameSession::class);
@@ -479,5 +484,15 @@ class User extends Authenticatable implements JWTSubject
     public function userLevel()
     {
         return $this->hasMany(UserLevel::class);
+    }
+
+    public function hyperRushHighScore()
+    {
+        $highestScore = DB::table('hyper_rush_game_sessions')
+            ->where('user_id', $this->id)
+            ->where('state', 'COMPLETED')
+            ->get()
+            ->max('score');
+        return $highestScore;
     }
 }

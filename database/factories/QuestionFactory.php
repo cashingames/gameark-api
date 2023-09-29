@@ -21,7 +21,8 @@ class QuestionFactory extends Factory
             'label' => $this->faker->sentence(5),
             'level' => $this->faker->randomElement(array('easy', 'medium', 'hard')),
             'game_type_id' => GameType::factory(),
-            'is_published' => true
+            'is_published' => true,
+            'trivia_type' => $this->faker->sentence(5)
         ];
     }
 }

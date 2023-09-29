@@ -36,6 +36,7 @@ class UserController extends BaseController
         $result->todaysPoints = $this->user->todaysPoints();
         $result->globalRank = $this->user->rank;
         $result->gamesCount = $this->user->played_games_count;
+        $result->hyperRushHighScore = $this->user->hyperRushHighScore();
         $result->winRate = $this->user->win_rate;
         $result->activePlans = $this->composeUserPlans();
         $result->hasActivePlan = $this->user->hasActivePlan();

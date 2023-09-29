@@ -107,5 +107,14 @@ class CategorySeeder extends Seeder
                 'background_color' => 'rgb(251, 198, 2)'
             ]
         );
+        DB::table('categories')->insert(
+            [
+                'name' => 'Hyper Trivia',
+                'description' => 'Answer country related sports questions.',
+                'category_id' => 101,
+                'icon' => 'icons/soccer_ball.png',
+                'background_color' => 'rgb(251, 198, 2)'
+            ]
+        );
     }
 }
