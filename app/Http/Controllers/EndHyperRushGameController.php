@@ -36,6 +36,7 @@ class EndHyperRushGameController extends BaseController
         $score = 0;
 
         $chosenOptions = [];
+        $chosenOptions = $request->chosenOptions;
 
         DB::transaction(function () use ($chosenOptions, $game) {
             foreach ($chosenOptions as $value) {

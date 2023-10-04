@@ -42,7 +42,7 @@ class StartHyperRushGameController extends BaseController
         }
 
         $result = $this->prepare($startResponse['gameSession'], $startResponse['questions']);
-        return ResponseHelper::success($result);
+        return $this->sendResponse($result, 'Success');
 
         }
 
