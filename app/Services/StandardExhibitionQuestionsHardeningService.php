@@ -26,7 +26,6 @@ class StandardExhibitionQuestionsHardeningService implements QuestionsHardeningS
                 $query->where('level', 'easy');
             })
             ->inRandomOrder()
-            ->take(20)
             ->get();
 
         $value = $value->each(function ($i, $k) {
